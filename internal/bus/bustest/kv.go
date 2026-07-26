@@ -7,23 +7,23 @@ import (
 	"testing"
 	"time"
 
-	"github.com/ory/dockertest/v4"
 	"github.com/hanzokv/go/v9"
+	"github.com/ory/dockertest/v4"
 
 	"github.com/hanzoai/psrpc/internal/bus"
 )
 
 func init() {
-	RegisterServer("Redis", NewRedis)
+	RegisterServer("KV", NewKV)
 }
 
-var redisLast = baseID
+var kvLast = baseID
 
-func NewRedis(t testing.TB, pool dockertest.Pool) Server {
+func NewKV(t testing.TB, pool dockertest.Pool) Server {
 	ctx := context.Background()
 	c, err := pool.Run(ctx, "redis",
 		dockertest.WithTag("latest"),
-		dockertest.WithName(fmt.Sprintf("psrpc-redis-%d", atomic.AddUint32(&redisLast, 1))),
+		dockertest.WithName(fmt.Sprintf("psrpc-kv-%d", atomic.AddUint32(&kvLast, 1))),
 	)
 	if err != nil {
 		t.Fatal(err)
@@ -34,9 +34,9 @@ func NewRedis(t testing.TB, pool dockertest.Pool) Server {
 	addr := c.GetHostPort("6379/tcp")
 	waitTCPPort(t, pool, addr)
 
-	t.Log("Redis running on", addr)
+	t.Log("KV running on", addr)
 
-	s := &redisServer{addr: addr}
+	s := &kvServer{addr: addr}
 
 	err = pool.Retry(ctx, 0, func() error {
 		rc, err := s.connect()
@@ -53,12 +53,12 @@ func NewRedis(t testing.TB, pool dockertest.Pool) Server {
 	return s
 }
 
-type redisServer struct {
+type kvServer struct {
 	addr string
 }
 
-func (s *redisServer) connect() (redis.UniversalClient, error) {
-	rc := redis.NewUniversalClient(&redis.UniversalOptions{Addrs: []string{s.addr}})
+func (s *kvServer) connect() (kv.UniversalClient, error) {
+	rc := kv.NewUniversalClient(&kv.UniversalOptions{Addrs: []string{s.addr}})
 
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
 	defer cancel()
@@ -71,10 +71,10 @@ func (s *redisServer) connect() (redis.UniversalClient, error) {
 	return rc, nil
 }
 
-func (s *redisServer) Connect(t testing.TB) bus.MessageBus {
+func (s *kvServer) Connect(t testing.TB) bus.MessageBus {
 	rc, err := s.connect()
 	if err != nil {
 		t.Fatal(err)
 	}
-	return bus.NewRedisMessageBus(rc)
+	return bus.NewKVMessageBus(rc)
 }

@@ -29,25 +29,25 @@ import (
 	"github.com/hanzoai/psrpc/internal/bus/bustest"
 )
 
-func redisTestChannel(channel string) bus.Channel {
+func kvTestChannel(channel string) bus.Channel {
 	return bus.Channel{Legacy: channel}
 }
 
-func TestRedisMessageBus(t *testing.T) {
-	srv := bustest.NewRedis(t, bustest.Docker(t))
+func TestKVMessageBus(t *testing.T) {
+	srv := bustest.NewKV(t, bustest.Docker(t))
 
 	t.Run("published messages are received by subscribers", func(t *testing.T) {
 		b0 := srv.Connect(t)
 		b1 := srv.Connect(t)
 
-		r, err := b0.Subscribe(context.Background(), redisTestChannel("test"), 100)
+		r, err := b0.Subscribe(context.Background(), kvTestChannel("test"), 100)
 		require.NoError(t, err)
 
 		time.Sleep(100 * time.Millisecond)
 
 		src := wrapperspb.String("test")
 
-		err = b1.Publish(context.Background(), redisTestChannel("test"), src)
+		err = b1.Publish(context.Background(), kvTestChannel("test"), src)
 		require.NoError(t, err)
 
 		b, ok := bus.RawRead(r)
@@ -63,16 +63,16 @@ func TestRedisMessageBus(t *testing.T) {
 		b1 := srv.Connect(t)
 		b2 := srv.Connect(t)
 
-		r1, err := b1.SubscribeQueue(context.Background(), redisTestChannel("test"), 100)
+		r1, err := b1.SubscribeQueue(context.Background(), kvTestChannel("test"), 100)
 		require.NoError(t, err)
-		r2, err := b2.SubscribeQueue(context.Background(), redisTestChannel("test"), 100)
+		r2, err := b2.SubscribeQueue(context.Background(), kvTestChannel("test"), 100)
 		require.NoError(t, err)
 
 		time.Sleep(100 * time.Millisecond)
 
 		src := wrapperspb.String("test")
 
-		err = b0.Publish(context.Background(), redisTestChannel("test"), src)
+		err = b0.Publish(context.Background(), kvTestChannel("test"), src)
 		require.NoError(t, err)
 
 		var n atomic.Int64
@@ -98,16 +98,16 @@ func TestRedisMessageBus(t *testing.T) {
 		b1 := srv.Connect(t)
 		b2 := srv.Connect(t)
 
-		r1, err := b1.Subscribe(context.Background(), redisTestChannel("test"), 100)
+		r1, err := b1.Subscribe(context.Background(), kvTestChannel("test"), 100)
 		require.NoError(t, err)
-		r2, err := b2.Subscribe(context.Background(), redisTestChannel("test"), 100)
+		r2, err := b2.Subscribe(context.Background(), kvTestChannel("test"), 100)
 		require.NoError(t, err)
 
 		time.Sleep(100 * time.Millisecond)
 
 		src := wrapperspb.String("test")
 
-		err = b0.Publish(context.Background(), redisTestChannel("test"), src)
+		err = b0.Publish(context.Background(), kvTestChannel("test"), src)
 		require.NoError(t, err)
 
 		_, ok := bus.RawRead(r1)
@@ -120,7 +120,7 @@ func TestRedisMessageBus(t *testing.T) {
 
 		time.Sleep(time.Second)
 
-		err = b0.Publish(context.Background(), redisTestChannel("test"), src)
+		err = b0.Publish(context.Background(), kvTestChannel("test"), src)
 		require.NoError(t, err)
 
 		_, ok = bus.RawRead(r1)
@@ -130,13 +130,13 @@ func TestRedisMessageBus(t *testing.T) {
 	})
 }
 
-func BenchmarkRedisMessageBus(b *testing.B) {
-	srv := bustest.NewRedis(b, bustest.Docker(b))
+func BenchmarkKVMessageBus(b *testing.B) {
+	srv := bustest.NewKV(b, bustest.Docker(b))
 
 	b0 := srv.Connect(b)
 	b1 := srv.Connect(b)
 
-	r, _ := b0.Subscribe(context.Background(), redisTestChannel("test"), 100)
+	r, _ := b0.Subscribe(context.Background(), kvTestChannel("test"), 100)
 
 	time.Sleep(100 * time.Millisecond)
 
@@ -152,7 +152,7 @@ func BenchmarkRedisMessageBus(b *testing.B) {
 
 	src := wrapperspb.String("test")
 	for i := 0; i < b.N; i++ {
-		b1.Publish(context.Background(), redisTestChannel("test"), src)
+		b1.Publish(context.Background(), kvTestChannel("test"), src)
 	}
 
 	<-done
