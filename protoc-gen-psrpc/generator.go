@@ -34,11 +34,11 @@ import (
 	descriptor "google.golang.org/protobuf/types/descriptorpb"
 	plugin "google.golang.org/protobuf/types/pluginpb"
 
-	"github.com/livekit/psrpc/protoc-gen-psrpc/internal/gen"
-	"github.com/livekit/psrpc/protoc-gen-psrpc/internal/gen/stringutils"
-	"github.com/livekit/psrpc/protoc-gen-psrpc/internal/gen/typemap"
-	"github.com/livekit/psrpc/protoc-gen-psrpc/options"
-	"github.com/livekit/psrpc/version"
+	"github.com/hanzoai/psrpc/protoc-gen-psrpc/internal/gen"
+	"github.com/hanzoai/psrpc/protoc-gen-psrpc/internal/gen/stringutils"
+	"github.com/hanzoai/psrpc/protoc-gen-psrpc/internal/gen/typemap"
+	"github.com/hanzoai/psrpc/protoc-gen-psrpc/options"
+	"github.com/hanzoai/psrpc/version"
 )
 
 type psrpc struct {
@@ -276,12 +276,12 @@ func (t *psrpc) generateImports(file *descriptor.FileDescriptorProto) {
 	}
 
 	// dependency imports
-	t.P(`  "github.com/livekit/psrpc"`)
-	t.P(`  "github.com/livekit/psrpc/pkg/client"`)
-	t.P(`  "github.com/livekit/psrpc/pkg/info"`)
-	t.P(`  "github.com/livekit/psrpc/pkg/rand"`)
-	t.P(`  "github.com/livekit/psrpc/pkg/server"`)
-	t.P(`  "github.com/livekit/psrpc/version"`)
+	t.P(`  "github.com/hanzoai/psrpc"`)
+	t.P(`  "github.com/hanzoai/psrpc/pkg/client"`)
+	t.P(`  "github.com/hanzoai/psrpc/pkg/info"`)
+	t.P(`  "github.com/hanzoai/psrpc/pkg/rand"`)
+	t.P(`  "github.com/hanzoai/psrpc/pkg/server"`)
+	t.P(`  "github.com/hanzoai/psrpc/version"`)
 	t.P(`)`)
 
 	// It's legal to import a message and use it as an input or output for a

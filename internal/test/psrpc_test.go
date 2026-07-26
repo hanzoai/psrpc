@@ -22,14 +22,14 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	"github.com/livekit/psrpc"
-	"github.com/livekit/psrpc/internal"
-	"github.com/livekit/psrpc/internal/bus"
-	"github.com/livekit/psrpc/internal/bus/bustest"
-	"github.com/livekit/psrpc/pkg/client"
-	"github.com/livekit/psrpc/pkg/info"
-	"github.com/livekit/psrpc/pkg/rand"
-	"github.com/livekit/psrpc/pkg/server"
+	"github.com/hanzoai/psrpc"
+	"github.com/hanzoai/psrpc/internal"
+	"github.com/hanzoai/psrpc/internal/bus"
+	"github.com/hanzoai/psrpc/internal/bus/bustest"
+	"github.com/hanzoai/psrpc/pkg/client"
+	"github.com/hanzoai/psrpc/pkg/info"
+	"github.com/hanzoai/psrpc/pkg/rand"
+	"github.com/hanzoai/psrpc/pkg/server"
 )
 
 func TestRPC(t *testing.T) {

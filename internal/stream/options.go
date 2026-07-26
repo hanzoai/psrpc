@@ -15,7 +15,7 @@
 package stream
 
 import (
-	"github.com/livekit/psrpc"
+	"github.com/hanzoai/psrpc"
 )
 
 func getStreamOpts(options psrpc.StreamOpts, opts ...psrpc.StreamOption) psrpc.StreamOpts {

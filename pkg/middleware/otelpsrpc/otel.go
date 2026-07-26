@@ -13,9 +13,9 @@ import (
 	"google.golang.org/grpc/status"
 	"google.golang.org/protobuf/proto"
 
-	"github.com/livekit/psrpc"
-	"github.com/livekit/psrpc/pkg/metadata"
-	"github.com/livekit/psrpc/version"
+	"github.com/hanzoai/psrpc"
+	"github.com/hanzoai/psrpc/pkg/metadata"
+	"github.com/hanzoai/psrpc/version"
 )
 
 type Config struct {
@@ -34,7 +34,7 @@ func (c *Config) defaults() {
 
 func (c *Config) getTracer() trace.Tracer {
 	return c.TracerProvider.Tracer(
-		"github.com/livekit/psrpc",
+		"github.com/hanzoai/psrpc",
 		trace.WithInstrumentationVersion(version.Version),
 	)
 }

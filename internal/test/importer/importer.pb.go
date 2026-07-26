@@ -23,7 +23,7 @@
 package importer
 
 import (
-	importable "github.com/livekit/psrpc/internal/test/importable"
+	importable "github.com/hanzoai/psrpc/internal/test/importable"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	reflect "reflect"

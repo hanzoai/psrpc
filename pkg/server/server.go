@@ -23,9 +23,9 @@ import (
 	"golang.org/x/exp/maps"
 	"google.golang.org/protobuf/proto"
 
-	"github.com/livekit/psrpc"
-	"github.com/livekit/psrpc/internal/bus"
-	"github.com/livekit/psrpc/pkg/info"
+	"github.com/hanzoai/psrpc"
+	"github.com/hanzoai/psrpc/internal/bus"
+	"github.com/hanzoai/psrpc/pkg/info"
 )
 
 type rpcHandler interface {

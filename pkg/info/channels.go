@@ -18,7 +18,7 @@ import (
 	"sync"
 	"unicode"
 
-	"github.com/livekit/psrpc/internal/bus"
+	"github.com/hanzoai/psrpc/internal/bus"
 )
 
 const lowerHex = "0123456789abcdef"

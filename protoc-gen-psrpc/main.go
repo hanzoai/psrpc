@@ -19,8 +19,8 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/livekit/psrpc/protoc-gen-psrpc/internal/gen"
-	"github.com/livekit/psrpc/version"
+	"github.com/hanzoai/psrpc/protoc-gen-psrpc/internal/gen"
+	"github.com/hanzoai/psrpc/version"
 )
 
 func main() {

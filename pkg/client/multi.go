@@ -20,13 +20,13 @@ import (
 
 	"google.golang.org/protobuf/proto"
 
-	"github.com/livekit/psrpc"
-	"github.com/livekit/psrpc/internal"
-	"github.com/livekit/psrpc/internal/bus"
-	"github.com/livekit/psrpc/internal/interceptors"
-	"github.com/livekit/psrpc/pkg/info"
-	"github.com/livekit/psrpc/pkg/metadata"
-	"github.com/livekit/psrpc/pkg/rand"
+	"github.com/hanzoai/psrpc"
+	"github.com/hanzoai/psrpc/internal"
+	"github.com/hanzoai/psrpc/internal/bus"
+	"github.com/hanzoai/psrpc/internal/interceptors"
+	"github.com/hanzoai/psrpc/pkg/info"
+	"github.com/hanzoai/psrpc/pkg/metadata"
+	"github.com/hanzoai/psrpc/pkg/rand"
 )
 
 func RequestMulti[ResponseType proto.Message](

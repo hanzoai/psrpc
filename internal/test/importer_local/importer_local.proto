@@ -15,7 +15,7 @@
 syntax = "proto3";
 
 package psrpc.internal.test.importer_local;
-option go_package = "github.com/livekit/psrpc/internal/test/importer_local";
+option go_package = "github.com/hanzoai/psrpc/internal/test/importer_local";
 
 import "importer_local_msgdef.proto";
 

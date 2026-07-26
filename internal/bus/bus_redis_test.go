@@ -25,8 +25,8 @@ import (
 	"go.uber.org/atomic"
 	"google.golang.org/protobuf/types/known/wrapperspb"
 
-	"github.com/livekit/psrpc/internal/bus"
-	"github.com/livekit/psrpc/internal/bus/bustest"
+	"github.com/hanzoai/psrpc/internal/bus"
+	"github.com/hanzoai/psrpc/internal/bus/bustest"
 )
 
 func redisTestChannel(channel string) bus.Channel {

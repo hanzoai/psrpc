@@ -21,7 +21,7 @@
 package x
 
 import (
-	y "github.com/livekit/psrpc/internal/test/importmapping/y"
+	y "github.com/hanzoai/psrpc/internal/test/importmapping/y"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	reflect "reflect"

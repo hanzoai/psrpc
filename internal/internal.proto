@@ -15,7 +15,7 @@
 syntax = "proto3";
 
 package internal;
-option go_package = "github.com/livekit/psrpc/internal";
+option go_package = "github.com/hanzoai/psrpc/internal";
 
 import "google/protobuf/any.proto";
 

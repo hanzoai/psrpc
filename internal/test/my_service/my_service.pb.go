@@ -21,7 +21,7 @@
 package my_service
 
 import (
-	_ "github.com/livekit/psrpc/protoc-gen-psrpc/options"
+	_ "github.com/hanzoai/psrpc/protoc-gen-psrpc/options"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	reflect "reflect"

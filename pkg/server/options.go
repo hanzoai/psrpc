@@ -15,9 +15,9 @@
 package server
 
 import (
-	"github.com/livekit/psrpc"
-	"github.com/livekit/psrpc/internal/bus"
-	"github.com/livekit/psrpc/internal/interceptors"
+	"github.com/hanzoai/psrpc"
+	"github.com/hanzoai/psrpc/internal/bus"
+	"github.com/hanzoai/psrpc/internal/interceptors"
 )
 
 func getServerOpts(opts ...psrpc.ServerOption) psrpc.ServerOpts {

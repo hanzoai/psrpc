@@ -17,7 +17,7 @@ package info
 import (
 	"sync"
 
-	"github.com/livekit/psrpc"
+	"github.com/hanzoai/psrpc"
 )
 
 type ServiceDefinition struct {

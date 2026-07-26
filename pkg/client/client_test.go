@@ -21,8 +21,8 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"github.com/livekit/psrpc"
-	"github.com/livekit/psrpc/internal"
+	"github.com/hanzoai/psrpc"
+	"github.com/hanzoai/psrpc/internal"
 )
 
 func TestAffinity(t *testing.T) {

@@ -19,7 +19,7 @@ import (
 
 	"google.golang.org/protobuf/proto"
 
-	"github.com/livekit/psrpc/internal/bus"
+	"github.com/hanzoai/psrpc/internal/bus"
 )
 
 type Subscription[MessageType proto.Message] bus.Subscription[MessageType]

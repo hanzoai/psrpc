@@ -15,7 +15,7 @@
 syntax = "proto3";
 
 package testutils;
-option go_package = "github.com/livekit/psrpc/testutils";
+option go_package = "github.com/hanzoai/psrpc/testutils";
 
 message LaggyMessage {
   string origin = 1;

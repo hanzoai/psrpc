@@ -16,7 +16,7 @@ syntax = "proto3";
 
 // No package name
 
-option go_package = "github.com/livekit/psrpc/internal/test/no_package_name";
+option go_package = "github.com/hanzoai/psrpc/internal/test/no_package_name";
 
 message Msg {}
 

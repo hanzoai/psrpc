@@ -21,10 +21,10 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"github.com/livekit/psrpc/internal"
-	"github.com/livekit/psrpc/internal/bus"
-	"github.com/livekit/psrpc/internal/bus/bustest"
-	"github.com/livekit/psrpc/pkg/rand"
+	"github.com/hanzoai/psrpc/internal"
+	"github.com/hanzoai/psrpc/internal/bus"
+	"github.com/hanzoai/psrpc/internal/bus/bustest"
+	"github.com/hanzoai/psrpc/pkg/rand"
 )
 
 const defaultClientTimeout = time.Second * 3
