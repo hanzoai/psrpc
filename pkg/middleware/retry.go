@@ -20,7 +20,7 @@ import (
 
 	"google.golang.org/protobuf/proto"
 
-	"github.com/livekit/psrpc"
+	"github.com/hanzoai/psrpc"
 )
 
 type RetryOptions struct {

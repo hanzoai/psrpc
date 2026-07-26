@@ -15,7 +15,7 @@
 syntax = "proto3";
 
 package psrpc;
-option go_package = "github.com/livekit/psrpc/protoc-gen-psrpc/options";
+option go_package = "github.com/hanzoai/psrpc/protoc-gen-psrpc/options";
 
 import "google/protobuf/descriptor.proto";
 

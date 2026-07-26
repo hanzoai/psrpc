@@ -21,13 +21,13 @@ import (
 
 	"google.golang.org/protobuf/proto"
 
-	"github.com/livekit/psrpc"
-	"github.com/livekit/psrpc/internal"
-	"github.com/livekit/psrpc/internal/logger"
-	"github.com/livekit/psrpc/internal/stream"
-	"github.com/livekit/psrpc/pkg/info"
-	"github.com/livekit/psrpc/pkg/metadata"
-	"github.com/livekit/psrpc/pkg/rand"
+	"github.com/hanzoai/psrpc"
+	"github.com/hanzoai/psrpc/internal"
+	"github.com/hanzoai/psrpc/internal/logger"
+	"github.com/hanzoai/psrpc/internal/stream"
+	"github.com/hanzoai/psrpc/pkg/info"
+	"github.com/hanzoai/psrpc/pkg/metadata"
+	"github.com/hanzoai/psrpc/pkg/rand"
 )
 
 func OpenStream[SendType, RecvType proto.Message](

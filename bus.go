@@ -16,9 +16,9 @@ package psrpc
 
 import (
 	"github.com/nats-io/nats.go"
-	"github.com/redis/go-redis/v9"
+	"github.com/hanzokv/go/v9"
 
-	"github.com/livekit/psrpc/internal/bus"
+	"github.com/hanzoai/psrpc/internal/bus"
 )
 
 type Channel = bus.Channel

@@ -5,7 +5,7 @@ import (
 
 	"github.com/ory/dockertest/v4"
 
-	"github.com/livekit/psrpc/internal/bus"
+	"github.com/hanzoai/psrpc/internal/bus"
 )
 
 func init() {

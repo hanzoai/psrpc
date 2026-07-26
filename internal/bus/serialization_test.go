@@ -21,7 +21,7 @@ import (
 	"github.com/stretchr/testify/require"
 	"google.golang.org/protobuf/proto"
 
-	"github.com/livekit/psrpc/internal"
+	"github.com/hanzoai/psrpc/internal"
 )
 
 func TestSerialization(t *testing.T) {

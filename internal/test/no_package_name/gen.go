@@ -13,4 +13,4 @@
 
 package no_package_name
 
-//go:generate protoc --go_out=module=github.com/livekit/psrpc/internal/test/no_package_name:. --psrpc_out=module=github.com/livekit/psrpc/internal/test/no_package_name:. no_package_name.proto
+//go:generate protoc --go_out=module=github.com/hanzoai/psrpc/internal/test/no_package_name:. --psrpc_out=module=github.com/hanzoai/psrpc/internal/test/no_package_name:. no_package_name.proto

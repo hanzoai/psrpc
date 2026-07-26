@@ -21,7 +21,7 @@
 package no_package_name_importer
 
 import (
-	no_package_name "github.com/livekit/psrpc/internal/test/no_package_name"
+	no_package_name "github.com/hanzoai/psrpc/internal/test/no_package_name"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	reflect "reflect"

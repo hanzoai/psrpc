@@ -15,8 +15,8 @@
 package testutils
 
 import (
-	"github.com/livekit/psrpc"
-	"github.com/livekit/psrpc/internal/bus"
+	"github.com/hanzoai/psrpc"
+	"github.com/hanzoai/psrpc/internal/bus"
 )
 
 type Channel = bus.Channel

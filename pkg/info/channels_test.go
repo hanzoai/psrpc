@@ -19,7 +19,7 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"github.com/livekit/psrpc"
+	"github.com/hanzoai/psrpc"
 )
 
 func TestChannelFormatters(t *testing.T) {

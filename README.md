@@ -112,19 +112,19 @@ message MyServerMessage {}
 
 ### Generation
 
-Install `protoc-gen-psrpc` by running `go install github.com/livekit/psrpc/protoc-gen-psrpc`.
+Install `protoc-gen-psrpc` by running `go install github.com/hanzoai/psrpc/protoc-gen-psrpc`.
 
 If using the custom options above, you'll also need to include [options.proto](protoc-gen-psrpc/options/options.proto).
 The simplest way to do this is to include psrpc in your project, then run
 ```shell
-go list -json -m github.com/livekit/psrpc
+go list -json -m github.com/hanzoai/psrpc
 
 {
-	"Path": "github.com/livekit/psrpc",
+	"Path": "github.com/hanzoai/psrpc",
 	"Version": "v0.2.2",
 	"Time": "2022-12-27T21:40:05Z",
-	"Dir": "/Users/dc/go/pkg/mod/github.com/livekit/psrpc@v0.2.2",
-	"GoMod": "/Users/dc/go/pkg/mod/cache/download/github.com/livekit/psrpc/@v/v0.2.2.mod",
+	"Dir": "/Users/dc/go/pkg/mod/github.com/hanzoai/psrpc@v0.2.2",
+	"GoMod": "/Users/dc/go/pkg/mod/cache/download/github.com/hanzoai/psrpc/@v/v0.2.2.mod",
 	"GoVersion": "1.20"
 }
 ```
@@ -135,7 +135,7 @@ Use the `--psrpc_out` with `protoc` and include the options directory.
 protoc \
   --go_out=paths=source_relative:. \
   --psrpc_out=paths=source_relative:. \
-  -I /Users/dc/go/pkg/mod/github.com/livekit/psrpc@v0.2.2/protoc-gen-psrpc/options \
+  -I /Users/dc/go/pkg/mod/github.com/hanzoai/psrpc@v0.2.2/protoc-gen-psrpc/options \
   -I=. my_service.proto
 ```
 
@@ -322,7 +322,7 @@ func NewError(code ErrorCode, err error) Error
 ```
 
 The `code` parameter provides more context about the cause of the error.
-A [variety of codes](https://github.com/livekit/psrpc/blob/main/errors.go#L39) are defined for common error conditions.
+A [variety of codes](https://github.com/hanzoai/psrpc/blob/main/errors.go#L39) are defined for common error conditions.
 PSRPC errors are serialized by the PSRPC server implementation, and unmarshalled (with the original error code) on the client.
 By retrieving the code using the `Code()` method, the client can determine if the error was caused by a server failure,
 or a client error, such as a bad parameter. This can be used as an input to the retry logic, or success rate metrics.

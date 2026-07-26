@@ -18,7 +18,7 @@ import (
 	"google.golang.org/protobuf/proto"
 	"google.golang.org/protobuf/types/known/anypb"
 
-	"github.com/livekit/psrpc/internal"
+	"github.com/hanzoai/psrpc/internal"
 )
 
 func serialize(msg proto.Message, channel string) ([]byte, error) {

@@ -21,7 +21,7 @@ import (
 	"go.uber.org/atomic"
 	"google.golang.org/protobuf/proto"
 
-	"github.com/livekit/psrpc"
+	"github.com/hanzoai/psrpc"
 )
 
 type MetricRole int

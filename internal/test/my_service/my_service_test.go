@@ -27,9 +27,9 @@ import (
 	"google.golang.org/grpc/status"
 	"google.golang.org/protobuf/proto"
 
-	"github.com/livekit/psrpc"
-	"github.com/livekit/psrpc/internal/bus"
-	"github.com/livekit/psrpc/internal/bus/bustest"
+	"github.com/hanzoai/psrpc"
+	"github.com/hanzoai/psrpc/internal/bus"
+	"github.com/hanzoai/psrpc/internal/bus/bustest"
 )
 
 func TestGeneratedService(t *testing.T) {

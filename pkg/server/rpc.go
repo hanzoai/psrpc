@@ -24,12 +24,12 @@ import (
 	"google.golang.org/grpc/status"
 	"google.golang.org/protobuf/proto"
 
-	"github.com/livekit/psrpc"
-	"github.com/livekit/psrpc/internal"
-	"github.com/livekit/psrpc/internal/bus"
-	"github.com/livekit/psrpc/internal/logger"
-	"github.com/livekit/psrpc/pkg/info"
-	"github.com/livekit/psrpc/pkg/metadata"
+	"github.com/hanzoai/psrpc"
+	"github.com/hanzoai/psrpc/internal"
+	"github.com/hanzoai/psrpc/internal/bus"
+	"github.com/hanzoai/psrpc/internal/logger"
+	"github.com/hanzoai/psrpc/pkg/info"
+	"github.com/hanzoai/psrpc/pkg/metadata"
 )
 
 type AffinityFunc[RequestType proto.Message] func(context.Context, RequestType) float32

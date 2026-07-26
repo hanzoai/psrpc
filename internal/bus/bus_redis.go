@@ -23,14 +23,14 @@ import (
 	"time"
 
 	"github.com/gammazero/deque"
-	"github.com/redis/go-redis/v9"
+	"github.com/hanzokv/go/v9"
 	"github.com/zeebo/xxh3"
 	"go.uber.org/multierr"
 	"golang.org/x/exp/maps"
 	"golang.org/x/exp/slices"
 	"google.golang.org/protobuf/proto"
 
-	"github.com/livekit/psrpc/internal/logger"
+	"github.com/hanzoai/psrpc/internal/logger"
 )
 
 const (
