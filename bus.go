@@ -15,8 +15,8 @@
 package psrpc
 
 import (
-	"github.com/nats-io/nats.go"
 	"github.com/hanzokv/go/v9"
+	"github.com/nats-io/nats.go"
 
 	"github.com/hanzoai/psrpc/internal/bus"
 )
@@ -32,6 +32,6 @@ func NewNatsMessageBus(nc *nats.Conn) MessageBus {
 	return bus.NewNatsMessageBus(nc)
 }
 
-func NewRedisMessageBus(rc redis.UniversalClient) MessageBus {
-	return bus.NewRedisMessageBus(rc)
+func NewKVMessageBus(rc kv.UniversalClient) MessageBus {
+	return bus.NewKVMessageBus(rc)
 }

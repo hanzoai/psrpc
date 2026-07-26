@@ -41,46 +41,46 @@ const (
 	publishBuckets          = 17
 )
 
-type redisMessageBus struct {
-	rc  redis.UniversalClient
+type kvMessageBus struct {
+	rc  kv.UniversalClient
 	ctx context.Context
-	ps  *redis.PubSub
+	ps  *kv.PubSub
 
 	mu     sync.Mutex
-	subs   map[string]*redisSubList
-	queues map[string]*redisSubList
+	subs   map[string]*kvSubList
+	queues map[string]*kvSubList
 
 	wakeup          chan struct{}
-	ops             *redisWriteOpQueue
+	ops             *kvWriteOpQueue
 	dirtyChannels   map[string]struct{}
 	currentChannels map[string]struct{}
 
-	publishQueues [publishBuckets]*redisPublishQueue
+	publishQueues [publishBuckets]*kvPublishQueue
 }
 
-func NewRedisMessageBus(rc redis.UniversalClient) MessageBus {
+func NewKVMessageBus(rc kv.UniversalClient) MessageBus {
 	ctx := context.Background()
-	r := &redisMessageBus{
+	r := &kvMessageBus{
 		rc:     rc,
 		ctx:    ctx,
 		ps:     rc.Subscribe(ctx),
-		subs:   map[string]*redisSubList{},
-		queues: map[string]*redisSubList{},
+		subs:   map[string]*kvSubList{},
+		queues: map[string]*kvSubList{},
 
 		wakeup:          make(chan struct{}, 1),
-		ops:             &redisWriteOpQueue{},
+		ops:             &kvWriteOpQueue{},
 		dirtyChannels:   map[string]struct{}{},
 		currentChannels: map[string]struct{}{},
 	}
 	for i := range len(r.publishQueues) {
-		r.publishQueues[i] = newRedisPublishQueue(r.ctx, r.rc)
+		r.publishQueues[i] = newKVPublishQueue(r.ctx, r.rc)
 	}
 	go r.readWorker()
 	go r.writeWorker()
 	return r
 }
 
-func (r *redisMessageBus) Publish(_ context.Context, channel Channel, msg proto.Message) error {
+func (r *kvMessageBus) Publish(_ context.Context, channel Channel, msg proto.Message) error {
 	b, err := serialize(msg, "")
 	if err != nil {
 		return err
@@ -91,22 +91,22 @@ func (r *redisMessageBus) Publish(_ context.Context, channel Channel, msg proto.
 	return nil
 }
 
-func (r *redisMessageBus) Subscribe(ctx context.Context, channel Channel, size int) (Reader, error) {
+func (r *kvMessageBus) Subscribe(ctx context.Context, channel Channel, size int) (Reader, error) {
 	return r.subscribe(ctx, channel.Legacy, size, r.subs, false)
 }
 
-func (r *redisMessageBus) SubscribeQueue(ctx context.Context, channel Channel, size int) (Reader, error) {
+func (r *kvMessageBus) SubscribeQueue(ctx context.Context, channel Channel, size int) (Reader, error) {
 	return r.subscribe(ctx, channel.Legacy, size, r.queues, true)
 }
 
-func (r *redisMessageBus) subscribe(ctx context.Context, channel string, size int, subLists map[string]*redisSubList, queue bool) (Reader, error) {
+func (r *kvMessageBus) subscribe(ctx context.Context, channel string, size int, subLists map[string]*kvSubList, queue bool) (Reader, error) {
 	ctx, cancel := context.WithCancel(ctx)
-	sub := &redisSubscription{
+	sub := &kvSubscription{
 		bus:     r,
 		ctx:     ctx,
 		cancel:  cancel,
 		channel: channel,
-		msgChan: make(chan *redis.Message, size),
+		msgChan: make(chan *kv.Message, size),
 		queue:   queue,
 	}
 
@@ -115,7 +115,7 @@ func (r *redisMessageBus) subscribe(ctx context.Context, channel string, size in
 
 	subList, ok := subLists[channel]
 	if !ok {
-		subList = &redisSubList{}
+		subList = &kvSubList{}
 		subLists[channel] = subList
 		r.reconcileSubscriptions(channel)
 	}
@@ -124,11 +124,11 @@ func (r *redisMessageBus) subscribe(ctx context.Context, channel string, size in
 	return sub, nil
 }
 
-func (r *redisMessageBus) unsubscribe(channel string, queue bool, sub *redisSubscription) {
+func (r *kvMessageBus) unsubscribe(channel string, queue bool, sub *kvSubscription) {
 	r.mu.Lock()
 	defer r.mu.Unlock()
 
-	var subLists map[string]*redisSubList
+	var subLists map[string]*kvSubList
 	if queue {
 		subLists = r.queues
 	} else {
@@ -152,12 +152,12 @@ func (r *redisMessageBus) unsubscribe(channel string, queue bool, sub *redisSubs
 	}
 }
 
-func (r *redisMessageBus) readWorker() {
+func (r *kvMessageBus) readWorker() {
 	var delay time.Duration
 	for {
 		msg, err := r.ps.ReceiveMessage(r.ctx)
 		if err != nil {
-			logger.Error(err, "redis receive message failed")
+			logger.Error(err, "kv receive message failed")
 
 			time.Sleep(delay)
 			if delay *= 2; delay == 0 {
@@ -180,12 +180,12 @@ func (r *redisMessageBus) readWorker() {
 	}
 }
 
-func (r *redisMessageBus) reconcileSubscriptions(channel string) {
+func (r *kvMessageBus) reconcileSubscriptions(channel string) {
 	r.dirtyChannels[channel] = struct{}{}
-	r.enqueueWriteOp(&redisReconcileSubscriptionsOp{r})
+	r.enqueueWriteOp(&kvReconcileSubscriptionsOp{r})
 }
 
-func (r *redisMessageBus) enqueueWriteOp(op redisWriteOp) {
+func (r *kvMessageBus) enqueueWriteOp(op kvWriteOp) {
 	r.ops.push(op)
 	select {
 	case r.wakeup <- struct{}{}:
@@ -193,7 +193,7 @@ func (r *redisMessageBus) enqueueWriteOp(op redisWriteOp) {
 	}
 }
 
-func (r *redisMessageBus) writeWorker() {
+func (r *kvMessageBus) writeWorker() {
 	for range r.wakeup {
 		r.ops.drain()
 	}
@@ -201,30 +201,30 @@ func (r *redisMessageBus) writeWorker() {
 
 // ----------------------------------------------
 
-type redisWriteOpQueue struct {
+type kvWriteOpQueue struct {
 	mu  sync.Mutex
-	ops deque.Deque[redisWriteOp]
+	ops deque.Deque[kvWriteOp]
 }
 
-func (q *redisWriteOpQueue) empty() bool {
+func (q *kvWriteOpQueue) empty() bool {
 	q.mu.Lock()
 	defer q.mu.Unlock()
 	return q.ops.Len() == 0
 }
 
-func (q *redisWriteOpQueue) push(op redisWriteOp) {
+func (q *kvWriteOpQueue) push(op kvWriteOp) {
 	q.mu.Lock()
 	defer q.mu.Unlock()
 	q.ops.PushBack(op)
 }
 
-func (q *redisWriteOpQueue) drain() {
+func (q *kvWriteOpQueue) drain() {
 	q.mu.Lock()
 	for q.ops.Len() > 0 {
 		op := q.ops.PopFront()
 		q.mu.Unlock()
 		if err := op.run(); err != nil {
-			logger.Error(err, "redis write message failed")
+			logger.Error(err, "kv write message failed")
 		}
 		q.mu.Lock()
 	}
@@ -233,17 +233,17 @@ func (q *redisWriteOpQueue) drain() {
 
 //-----------------------------------------------------
 
-type redisWriteOp interface {
+type kvWriteOp interface {
 	run() error
 }
 
 // ----------------------------------------------------
 
-type redisReconcileSubscriptionsOp struct {
-	*redisMessageBus
+type kvReconcileSubscriptionsOp struct {
+	*kvMessageBus
 }
 
-func (r *redisReconcileSubscriptionsOp) run() error {
+func (r *kvReconcileSubscriptionsOp) run() error {
 	r.mu.Lock()
 	for len(r.dirtyChannels) > 0 {
 		subscribe := make(map[string]struct{}, len(r.dirtyChannels))
@@ -269,7 +269,7 @@ func (r *redisReconcileSubscriptionsOp) run() error {
 		}
 
 		if err := multierr.Combine(subscribeErr, unsubscribeErr); err != nil {
-			logger.Error(err, "redis subscription reconciliation failed")
+			logger.Error(err, "kv subscription reconciliation failed")
 			time.Sleep(reconcilerRetryInterval)
 		}
 
@@ -293,12 +293,12 @@ func (r *redisReconcileSubscriptionsOp) run() error {
 
 // ----------------------------------------------------
 
-type redisSubList struct {
-	subs []*redisSubscription
+type kvSubList struct {
+	subs []*kvSubscription
 	next int
 }
 
-func (r *redisSubList) dispatchQueue(msg *redis.Message) {
+func (r *kvSubList) dispatchQueue(msg *kv.Message) {
 	if r.next >= len(r.subs) {
 		r.next = 0
 	}
@@ -306,7 +306,7 @@ func (r *redisSubList) dispatchQueue(msg *redis.Message) {
 	r.next++
 }
 
-func (r *redisSubList) dispatch(msg *redis.Message) {
+func (r *kvSubList) dispatch(msg *kv.Message) {
 	for _, sub := range r.subs {
 		sub.write(msg)
 	}
@@ -314,25 +314,25 @@ func (r *redisSubList) dispatch(msg *redis.Message) {
 
 // ----------------------------------------------------
 
-type redisSubscription struct {
-	bus     *redisMessageBus
+type kvSubscription struct {
+	bus     *kvMessageBus
 	ctx     context.Context
 	cancel  context.CancelFunc
 	channel string
-	msgChan chan *redis.Message
+	msgChan chan *kv.Message
 	queue   bool
 }
 
-func (r *redisSubscription) write(msg *redis.Message) {
+func (r *kvSubscription) write(msg *kv.Message) {
 	select {
 	case r.msgChan <- msg:
 	case <-r.ctx.Done():
 	}
 }
 
-func (r *redisSubscription) read() ([]byte, bool) {
+func (r *kvSubscription) read() ([]byte, bool) {
 	for {
-		var msg *redis.Message
+		var msg *kv.Message
 		var ok bool
 		select {
 		case msg, ok = <-r.msgChan:
@@ -356,7 +356,7 @@ func (r *redisSubscription) read() ([]byte, bool) {
 	}
 }
 
-func (r *redisSubscription) Close() error {
+func (r *kvSubscription) Close() error {
 	r.cancel()
 	r.bus.unsubscribe(r.channel, r.queue, r)
 	close(r.msgChan)
@@ -365,22 +365,22 @@ func (r *redisSubscription) Close() error {
 
 // ----------------------------------------------------
 
-type redisPublishMessage struct {
+type kvPublishMessage struct {
 	channel string
 	payload []byte
 }
 
-type redisPublishQueue struct {
+type kvPublishQueue struct {
 	ctx context.Context
-	rc  redis.UniversalClient
+	rc  kv.UniversalClient
 
 	lock     sync.Mutex
-	messages []redisPublishMessage
+	messages []kvPublishMessage
 	wakeup   chan struct{}
 }
 
-func newRedisPublishQueue(ctx context.Context, rc redis.UniversalClient) *redisPublishQueue {
-	r := &redisPublishQueue{
+func newKVPublishQueue(ctx context.Context, rc kv.UniversalClient) *kvPublishQueue {
+	r := &kvPublishQueue{
 		ctx:    ctx,
 		rc:     rc,
 		wakeup: make(chan struct{}, 1),
@@ -390,18 +390,18 @@ func newRedisPublishQueue(ctx context.Context, rc redis.UniversalClient) *redisP
 	return r
 }
 
-func (r *redisPublishQueue) Enqueue(channel string, payload []byte) {
+func (r *kvPublishQueue) Enqueue(channel string, payload []byte) {
 	r.lock.Lock()
 	defer r.lock.Unlock()
 
-	r.messages = append(r.messages, redisPublishMessage{channel, payload})
+	r.messages = append(r.messages, kvPublishMessage{channel, payload})
 	select {
 	case r.wakeup <- struct{}{}:
 	default:
 	}
 }
 
-func (r *redisPublishQueue) worker() {
+func (r *kvPublishQueue) worker() {
 	for {
 		select {
 		case <-r.wakeup:
@@ -414,7 +414,7 @@ func (r *redisPublishQueue) worker() {
 		r.messages = nil
 		r.lock.Unlock()
 
-		// using a pipeline to handle redis servers with a high RTT
+		// using a pipeline to handle kv servers with a high RTT
 		// (https://redis.io/docs/latest/develop/using-commands/pipelining/).
 		//
 		// This is doing oppotunistic batching + pipelining.

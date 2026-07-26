@@ -4,7 +4,7 @@ Create custom protobuf-based golang RPCs built on pub/sub.
 
 Supports:
 * Protobuf service definitions
-* Use Redis, Nats, or a local communication layer
+* Use KV, Nats, or a local communication layer
 * Custom server selection for RPC handling based on user-defined [affinity](#Affinity)
 * RPC topics - any RPC can be divided into topics, (e.g. by region)
 * Single RPCs - one request is handled by one server, used for normal RPCs
