@@ -1,0 +1,11 @@
+# PSRPC — the pub/sub RPC framework and its protoc plugin. Go module, no image.
+#
+# `go build ./...` compiles every package including the 18 checked-in .pb.go
+# files, so a regenerated-but-broken protobuf fails here. The suite then runs
+# everything EXCEPT internal/test: that package's bustest harness starts real
+# nats and redis containers through dockertest, so it is red or green according
+# to the runner's docker daemon rather than this code. Excluded by list, not by
+# a flag, so what is skipped is visible in the command itself.
+test:
+  - name: test
+    run: go build ./... && go test $(go list ./... | grep -v '/internal/test$')
