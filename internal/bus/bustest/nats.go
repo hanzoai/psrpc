@@ -30,7 +30,7 @@ func NewNATS(t testing.TB, pool dockertest.Pool) Server {
 	t.Cleanup(func() {
 		_ = c.Close(context.Background())
 	})
-	addr := c.GetHostPort("4222/tcp")
+	addr := hostPort(c.GetHostPort("4222/tcp"))
 	waitTCPPort(t, pool, addr)
 
 	t.Log("NATS running on", addr)

@@ -6,6 +6,27 @@
 # nats and redis containers through dockertest, so it is red or green according
 # to the runner's docker daemon rather than this code. Excluded by list, not by
 # a flag, so what is skipped is visible in the command itself.
+#
+# internal/test/my_service needs a generate step first. Its .psrpc.go half is
+# gitignored on purpose (internal/test/.gitignore: **/*.psrpc.go) — generated,
+# not committed — so a fresh checkout has the .pb.go and not the service code
+# that goes with it, and the package cannot build: `undefined: MyServiceServer`.
+# Only the psrpc half is generated here; the .pb.go beside it IS committed, and
+# regenerating that too would rewrite it against whatever protoc the runner
+# happens to carry.
 test:
   - name: test
-    run: go build ./... && go test $(go list ./... | grep -v '/internal/test$')
+    run: |
+      set -e
+      command -v protoc >/dev/null || { sudo apt-get update && sudo apt-get install -y protobuf-compiler; }
+      BIN=$(mktemp -d)
+      go build -o "$BIN/protoc-gen-psrpc" ./protoc-gen-psrpc
+      # From the package directory, as gen.go does: paths=source_relative
+      # places the output beside the .proto as it was NAMED, so invoking this
+      # from the repo root writes my_service.psrpc.go into the root and gives
+      # `found packages psrpc and my_service in <root>`.
+      ( cd internal/test/my_service \
+        && PATH="$BIN:$PATH" protoc \
+             --psrpc_out=paths=source_relative:. \
+             -I ../../../protoc-gen-psrpc/options -I=. my_service.proto )
+      go build ./... && go test $(go list ./... | grep -v '/internal/test$')

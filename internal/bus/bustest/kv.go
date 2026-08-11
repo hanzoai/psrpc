@@ -31,7 +31,7 @@ func NewKV(t testing.TB, pool dockertest.Pool) Server {
 	t.Cleanup(func() {
 		_ = c.Close(context.Background())
 	})
-	addr := c.GetHostPort("6379/tcp")
+	addr := hostPort(c.GetHostPort("6379/tcp"))
 	waitTCPPort(t, pool, addr)
 
 	t.Log("KV running on", addr)
